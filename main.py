@@ -30,7 +30,7 @@ app.add_middleware(
 # redirect to the docs
 @app.get("/", tags=["Docs"])
 async def redirect_docs():
-    return RedirectResponse("http://localhost:8000/docs")
+    return RedirectResponse("https://fastapi-17sw.onrender.com/docs")
 
 
 @app.post("/getRequestId", tags=["GET Request Id"])
