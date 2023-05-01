@@ -30,7 +30,7 @@ app.add_middleware(
 # redirect to the docs
 @app.get("/", tags=["Docs"])
 async def redirect_docs():
-    return RedirectResponse("https://fastapi-17sw.onrender.com/docs")
+    return RedirectResponse("http://localhost:8000/docs")
 
 
 @app.post("/getRequestId", tags=["GET Request Id"])
@@ -78,7 +78,7 @@ async def get_request_id():
 
 
 @app.get("/getRandomNumber/{requestId}", tags=["GET data by request Id"])
-def get_ramdom_number(requestId: int):
+async def get_ramdom_number(requestId: int):
     alchemy_url = "https://polygon-mumbai.g.alchemy.com/v2/gtP5XQRh8pmPyr4r5X5az9SLy-wauHKL"
     w3 = Web3(Web3.HTTPProvider(alchemy_url))
     contract_details = {}
@@ -91,6 +91,16 @@ def get_ramdom_number(requestId: int):
     contract = w3.eth.contract(address=contract_details.get(
         'address'), abi=contract_details.get('abi'))
     requests = contract.functions.getRequestStatus(requestId).call()
+    total_time = 0
+    while True:
+        if requests[0]:
+            break
+        time.sleep(5)
+        total_time += 5
+        requests = contract.functions.getRequestStatus(requestId).call()
+        if total_time >= 180:
+            break
+
     if requests[0]:
         random_number = requests[1][0]
         data = {
