@@ -95,8 +95,8 @@ async def get_ramdom_number(requestId: int):
     while True:
         if requests[0]:
             break
-        time.sleep(5)
-        total_time += 5
+        time.sleep(1)
+        total_time += 1
         requests = contract.functions.getRequestStatus(requestId).call()
         if total_time >= 180:
             break
