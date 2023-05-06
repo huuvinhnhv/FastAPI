@@ -70,6 +70,16 @@ async def get_request_id():
         # process receipt - might fail due to micro timeout of 10s
         requestId = str(contract.events.RequestSent(
         ).process_receipt(tx_receipt)[0]['args']['requestId'])
+        data = []
+        with open("data.json",'r') as json1:
+            data = json.load(json1)
+        new_data = {
+            "requestId": requestId,
+            "transectionLog": f'https://mumbai.polygonscan.com/tx/{w3.to_hex(tx_hash)}'
+        }
+        data.append(new_data)
+        with open("data.json",'w') as json2:
+            json.dump(data, json2)
         return requestId
     else:
         # error
@@ -100,13 +110,20 @@ async def get_ramdom_number(requestId: int):
         requests = contract.functions.getRequestStatus(requestId).call()
         if total_time >= 180:
             break
-
     if requests[0]:
         random_number = requests[1][0]
+        json_data = []
+        link = ''
+        with open('data.json','r') as file:
+            json_data = json.load(file)    
+        for data in json_data:
+            if data['requestId'] == str(requestId):
+                link = data['transectionLog']
+                break
         data = {
             "randomNum": str(random_number),
             "mappingNum": random_number % 20+1,
-            "transectionLog": "https://mumbai.polygonscan.com/address/0x63855287c54b89b339bb9a715359c7cf307d9c8a"
+            "transectionLog": link
         }
         return data
     raise HTTPException(
