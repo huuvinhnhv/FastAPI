@@ -30,10 +30,10 @@ app.add_middleware(
 # redirect to the docs
 @app.get("/", tags=["Docs"])
 async def redirect_docs():
-    return RedirectResponse("http://localhost:8000/docs")
+    return RedirectResponse("https://fastapi-17sw.onrender.com/docs")
 
 
-@app.post("/getRequestId", tags=["GET Request Id"])
+@app.get("/getRequestId", tags=["GET Request Id"])
 async def get_request_id():
     alchemy_url = "https://polygon-mumbai.g.alchemy.com/v2/gtP5XQRh8pmPyr4r5X5az9SLy-wauHKL"
     w3 = Web3(Web3.HTTPProvider(alchemy_url))
@@ -122,7 +122,7 @@ async def get_ramdom_number(requestId: int):
                 break
         data = {
             "randomNum": str(random_number),
-            "mappingNum": random_number % 20+1,
+            "mappingNum": random_number % 10+1,
             "transectionLog": link
         }
         return data
